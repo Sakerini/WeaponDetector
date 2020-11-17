@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+    <title>Хакатон МГТУ им Н.Э.Баумана</title>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+input[type=text], input[type=number], select{
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=submit] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+</style>
+</head>
+<div class="container">
+    <form action="{{ url_for('main') }}" method="POST">
+        <div class="row">
+            <h1>Input value</h1>
+        </div>
+        <div class="row">
+            <div class="col-25">
+              <label for="fname">Education</label>
+            </div>
+            <div class="col-75">
+              <input name="Education" type="number" min="0" step="1" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+              <label for="country">Sex</label>
+            </div>
+            <div class="col-75">
+              <select name="Sex">
+                <option value="1">Male</option>
+                <option value="0">Female</option>
+              </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+              <label for="fname">Age</label>
+            </div>
+            <div class="col-75">
+              <input name="Age" type="number" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+              <label for="fname">Pet</label>
+            </div>
+            <div class="col-75">
+              <input name="Pet" type="number" required>
+            </div>
+        </div> 
+        <div class="row">
+            <div class="col-25">
+              <label for="fname">Children</label>
+            </div>
+            <div class="col-75">
+              <input name="Children" type="number" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+              <label for="fname">Activity</label>
+            </div>
+            <div class="col-75">
+              <input name="Activity" type="number" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+              <label for="fname">Sport</label>
+            </div>
+            <div class="col-75">
+              <select name="Sport">
+                <option value="0">+</option>
+                <option value="1">-</option>
+              </select>
+            </div>
+        </div> 
+        <div class="row">
+            <div class="col-25">
+              <label for="country">Algorithms</label>
+            </div>
+            <div class="col-75">
+              <select name="Model">
+                <option value="svc">Support Vector Machines</option>
+                <option value="knn">KNN</option>
+                <option value="log">Logistic Regression</option>
+                <option value="random_forest">Random Forest</option>
+                <option value="gaussian">Naive Bayes</option>
+                <option value="perceptron">Perceptron</option>
+                <option value="sgd">Stochastic Gradient Decent</option>
+                <option value="linear_svc">Linear SVC</option>
+                <option value="decision_tree">Decision Tree</option>
+              </select>
+        </div>
+        <div class="col-25">
+        </div>
+        <div class="row" style="padding:10px">
+            <div class="col-75">
+                <input type="submit" style="margin: auto">
+            </div>
+        </div>
+    </form>
+</div>
+<br>
+<div class="result" align="center">
+    {% if original_input %}
+        {% for variable, value in original_input.items() %}
+            <b>{{ variable }}</b> : {{ value }} <br>
+        {% endfor %}
+        <br>
+        <br> Predicted Longevity is:
+           <p style="font-size:50px">{{ result }}</p>
+    {% endif %}
+</div>
+    
+<style>
+form {
+    margin: auto;
+    width: 35%;
+}
+.result {
+    margin: auto;
+    width: 35%;
+    border: 1px solid #ccc;
+}
+</style>
+</html>
+
