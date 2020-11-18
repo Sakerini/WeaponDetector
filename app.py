@@ -77,4 +77,6 @@ def get_all():
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=port)
+#     host = 'localhost'    # if testing on local machine
+    host = '192.168.1.2
+    app.run(host=host, port=port)
