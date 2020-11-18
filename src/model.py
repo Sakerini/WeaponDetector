@@ -1,14 +1,14 @@
 import pickle
 
 models_name = [
-#     'svc',
-#     'knn',
+    'svc',
+    'knn',
     'log',
     'random_forest',
     'gaussian',
     'perceptron',
     'sgd',
-#     'linear_svc',
+    'linear_svc',
     'decision_tree'
 ]
 
