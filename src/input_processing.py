@@ -21,6 +21,6 @@ def input_processing(form):
     Status = groupAge(Age) + Sport + IsAlone
     
     return pd.DataFrame(
-            [[Education,Sex,Age,Activity,Pet,Children,Sport,Family,IsAlone,AgeEducation,Status]],
-            columns=['Education','Sex','Age','Activity','Pet','Children','Sport','Family','IsAlone','Age*Education','Status'],
+            [[Education,Sex,Age,Pet,Children,Activity,Sport,Family,IsAlone,AgeEducation,Status]],
+            columns=['Education','Sex','Age','Pet','Children','Activity','Sport','Family','IsAlone','Age*Education','Status'],
             dtype=int)

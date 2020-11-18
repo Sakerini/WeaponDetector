@@ -59,24 +59,27 @@ def get_all():
     ]
     
     args = flask.request.args
-    model = args.get('Model')
+    model_name = args.get('Model')
     
     try:
         input_variables = input_processing(dict(args))
     except:
         return err_message()
     
-    if model and model in models:
-        model = models[model]
-        return str(model.predict(input_variables)[0])
+
+    res = {}
+    
+    if model_name and model_name in models:
+        model = models[model_name]
+        res[model_name] = model.predict(input_variables)[0]
     else:
-        res = {}
-        for model in models_list:
-            res[model] = models[model].predict(input_variables)[0]
-        return str(res)
+        for model_name in models_list:
+            res[model_name] = models[model_name].predict(input_variables)[0]
+
+    return str(res)
 
 
 if __name__ == '__main__':
 #     host = 'localhost'    # if testing on local machine
-    host = '192.168.1.2
+    host = '192.168.1.2'
     app.run(host=host, port=port)
