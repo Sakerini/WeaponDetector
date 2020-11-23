@@ -1,0 +1,14 @@
+<html lang="en" >
+    <head>
+        <meta charset="UTF-8">
+        <title>Doc</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='css/camera.css') }}">
+    </head>
+    <body>
+
+		<div class="booth">
+			<video id="video" width="400" height="300" autoplay></video>
+		</div>
+        <script src="{{ url_for('static',filename='js/video.js') }}"></script>
+    </body>
+</html>
