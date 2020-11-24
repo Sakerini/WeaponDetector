@@ -1,13 +1,11 @@
-#run python3 main.py -i localhost -o 5010 -f 32
-from pyimagesearch.motion_detection import SingleMotionDetector
+#run python3 main.py -i localhost -o 5010 -f 10
 from imutils.video import VideoStream
 from flask import Response
 from flask import Flask
 from flask import render_template
+import numpy as np
 import threading
 import argparse
-import datetime
-import imutils
 import time
 import cv2
 
@@ -17,25 +15,29 @@ import cv2
 outputFrame = None
 lock = threading.Lock()
 
-app = Flask(__name__,
- template_folder='template')
-#app = flask.Flask(__name__, template_folder='template')
+app = Flask(__name__, template_folder='template')
 
 # initialize the video stream and allow the camera sensor to
 vs = VideoStream(src=0).start()
 
 @app.route('/')
 def main():
-    return(render_template('index.html'))
+	return(render_template('index.html'))
 
-def detect_motion(frameCount):
+
+def detect_weapon(frameCount):
+	net = cv2.dnn.readNet("model/net.weights", "model/net.cfg")
+	classes = ["Weapon"]
+
+	layer_names = net.getLayerNames()
+	output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+	colors = np.random.uniform(0, 255, size=(len(classes), 3))
+
 	# grab global references to the video stream, output frame, and
 	# lock variables
 	global vs, outputFrame, lock
 
-	# initialize the motion detector and the total number of frames
-	# read thus far
-	md = SingleMotionDetector(accumWeight=0.1)
+	# initialize total number of frames read thus far
 	total = 0
 
 	# loop over frames from the video stream
@@ -43,40 +45,63 @@ def detect_motion(frameCount):
 		# read the next frame from the video stream, resize it,
 		# convert the frame to grayscale, and blur it
 		frame = vs.read()
-		frame = imutils.resize(frame, width=400)
-		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-		gray = cv2.GaussianBlur(gray, (7, 7), 0)
-
-		# grab the current timestamp and draw it on the frame
-		timestamp = datetime.datetime.now()
-		cv2.putText(frame, timestamp.strftime(
-			"%A %d %B %Y %I:%M:%S%p"), (10, frame.shape[0] - 10),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
+		height, width, channels = frame.shape
 
 		# if the total number of frames has reached a sufficient
 		# number to construct a reasonable background model, then
 		# continue to process the frame
 		if total > frameCount:
-			# detect motion in the image
-			motion = md.detect(gray)
+			# Detecting objects
+			blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
 
-			# cehck to see if motion was found in the frame
-			if motion is not None:
-				# unpack the tuple and draw the box surrounding the
-				# "motion area" on the output frame
-				(thresh, (minX, minY, maxX, maxY)) = motion
-				cv2.rectangle(frame, (minX, minY), (maxX, maxY),
-					(0, 0, 255), 2)
+			net.setInput(blob)
+			outs = net.forward(output_layers)
+
+			# Showing information on the screen
+			class_ids = []
+			confidences = []
+			boxes = []
+			for out in outs:
+				for detection in out:
+					scores = detection[5:]
+					class_id = np.argmax(scores)
+					confidence = scores[class_id]
+					if confidence > 0.5:
+						# Object detected
+						center_x = int(detection[0] * width)
+						center_y = int(detection[1] * height)
+						w = int(detection[2] * width)
+						h = int(detection[3] * height)
+
+						# Rectangle coordinates
+						x = int(center_x - w / 2)
+						y = int(center_y - h / 2)
+
+						boxes.append([x, y, w, h])
+						confidences.append(float(confidence))
+						class_ids.append(class_id)
+
+			indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)
+			# print(indexes)
+			if indexes == 0: print("weapon detected")
+			font = cv2.FONT_HERSHEY_PLAIN
+			for i in range(len(boxes)):
+				if i in indexes:
+					x, y, w, h = boxes[i]
+					label = str(classes[class_ids[i]])
+					color = colors[class_ids[i]]
+					cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
+					cv2.putText(frame, label, (x, y + 30), font, 3, color, 3)
+
 		
-		# update the background model and increment the total number
-		# of frames read thus far
-		md.update(gray)
+		# increment the total number of frames read thus far
 		total += 1
 
 		# acquire the lock, set the output frame, and release the
 		# lock
 		with lock:
 			outputFrame = frame.copy()
+
 		
 def generate():
 	# grab global references to the output frame and lock variables
@@ -119,8 +144,8 @@ if __name__ == '__main__':
 		help="# of frames used to construct the background model")
 	args = vars(ap.parse_args())
 
-    # start a thread that will perform motion detection
-	t = threading.Thread(target=detect_motion, args=(
+	# start a thread that will perform motion detection
+	t = threading.Thread(target=detect_weapon, args=(
 		args["frame_count"],))
 	t.daemon = True
 	t.start()
