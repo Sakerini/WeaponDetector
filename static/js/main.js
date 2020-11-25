@@ -1,4 +1,63 @@
+(function(){
+	var video = document.getElementById('video'),
+		canvas = document.getElementById('canvas'),
+		vendorUrl = window.URL || window.webkitURL;
 
+	navigator.getMedia = 	navigator.getUserMedia ||
+							navigator.webkitGetUserMedia ||
+							navigator.mozGetUserMedia ||
+							navigator.msGetUserMedia;
+
+	var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+	let ctx = canvas.getContext('2d');
+	let track;
+	let imageCapture;
+
+	function blobToDataURL(blob, callback) {
+		var a = new FileReader();
+		a.onload = function(e) {callback(e.target.result);}
+		a.readAsDataURL(blob);
+	}
+
+
+	function sendSnapshot() {
+		// imageCapture.grabFrame()
+		// .then(imageBitmap => {
+		// 	drawCanvas(canvas, imageBitmap);
+		// })
+
+		ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+		// console.log(video.videoHeight, video.videoWidth)
+
+		let dataURL = canvas.toDataURL('image/jpeg');
+		socket.emit('input', dataURL);
+		socket.on('rec', data => {
+			console.log(data);
+		});
+	}
+
+	navigator.getMedia({
+		video: true,
+		audio: false
+	}, function(stream){
+		video.srcObject = stream;
+		track = stream.getVideoTracks()[0]
+		imageCapture = new ImageCapture(track);
+
+		setInterval(() => {
+			if (stream)
+				sendSnapshot();
+		}, 250);
+
+		// video.play();
+	}, function(error){
+		console.log(error);
+	})
+
+	socket.on('rec', data => {
+		console.log(data);
+	});
+})();
 
 (function($) {
 
@@ -58,5 +117,4 @@
 					.css('transition', 'none');
 
 	});
-
 })(jQuery);

@@ -70,7 +70,8 @@
 					</header>
 					<div class="flex flex-4">
 						<div class="inner">
-							<img src="{{ url_for('video_feed') }}">
+							<video id="video" width="640" height="480" autoplay></video>
+							<canvas id="canvas" width="640" height="480"></canvas>
 						</div>
 					</div>
 				</div>
@@ -118,6 +119,7 @@
 		<!-- Scripts -->
 			<script src="/static/js/jquery.min.js"></script>
 			<script src="/static/js/skel.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.min.js"></script>
 			<script src="/static/js/main.js"></script>
 	</body>
 </html>
