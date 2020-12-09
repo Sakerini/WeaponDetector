@@ -22,32 +22,32 @@
 
 	function addRec(rec)
 	{
-		var len = rec.length;
-		
-		// var parent = document.createElement("div");
-		// parent.className += " block";
-		
-		var parent = document.getElementById("overlay");
-		parent.innerHTML = "";
-		for (var i = 0; i < len; i++)
-		{
-			var atr = rec[i][1]
-			var ele = document.createElement("div");
-			ele.className += " box"
-			ele.style.top = ""+atr[0][0]+"px"; 
-			ele.style.left = ""+atr[0][1]+"px";
-			ele.style.width = ""+atr[1][0]+"px";
-			ele.style.height = ""+atr[1][1]+"px";
-			ele.style.border = "2px solid blue";
-			var div = document.createElement("div");
-			div.innerHTML = rec[i][0];
-			div.className += " div";
-			div.style.top = ""+atr[0][0]+"px";
-			div.style.left = ""+(atr[0][1]) +"px";
-			parent.appendChild(ele);
-			parent.appendChild(div);
-		}
-		document.body.appendChild(parent);
+		var len = rec.length; 
+        var parent = document.getElementById("overlay");
+        parent.innerHTML = "";
+        parent.style += "width:640px; height:480px; border: 2px solid #FF0000; position:relative;"
+        for (var i = 0; i < len; i++)
+        {
+            var atr = rec[i]
+            var ele = document.createElement("div");
+            ele.style.top = ""+atr[1]+"px"; 
+            ele.style.left = ""+atr[2]+"px";
+            ele.style.width = ""+atr[3]+"px";
+            ele.style.height = ""+atr[4]+"px";
+            ele.style.border = "2px solid blue";
+            ele.style.color = '#00FFFF';
+            ele.style.position = 'absolute'; 
+            ele.style.border = '2px solid';
+            
+            var div = document.createElement("div");
+            div.innerHTML = atr[0];
+            div.style.top = ""+atr[1]+"px";
+            div.style.left = ""+(atr[2]) +"px";
+            div.style.color = '#00FFFF';
+            div.style.position = 'absolute';
+            parent.appendChild(ele);
+            parent.appendChild(div);
+        }
 	}
 
 
