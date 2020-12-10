@@ -40,4 +40,4 @@ if __name__ == '__main__':
 	ap.add_argument("-o", "--port", type=int, required=True)
 	args = vars(ap.parse_args())
 
-	socketio.run(app, port=args["port"])
+	socketio.run(app, host=args["ip"], port=args["port"])

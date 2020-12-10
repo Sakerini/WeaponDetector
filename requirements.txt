@@ -1,0 +1,10 @@
+numpy>=1.18.5
+opencv-python>=4.1.2
+Pillow
+
+torch>=1.6.0
+torchvision>=0.8.1
+
+# or install only cpu version
+# pytorch-cpu
+# torchvision-cpu
