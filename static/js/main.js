@@ -30,10 +30,10 @@
         {
             var atr = rec[i]
             var ele = document.createElement("div");
-            ele.style.top = ""+atr[1]+"px"; 
-            ele.style.left = ""+atr[2]+"px";
-            ele.style.width = ""+atr[3]+"px";
-            ele.style.height = ""+atr[4]+"px";
+            ele.style.top = ""+atr[2]+"px";
+            ele.style.left = ""+atr[1]+"px";
+            ele.style.height = ""+(atr[4]-atr[2])+"px";
+			ele.style.width = ""+(atr[3]-atr[1])+"px";
             ele.style.border = "2px solid blue";
             ele.style.color = '#00FFFF';
             ele.style.position = 'absolute'; 
@@ -41,8 +41,8 @@
             
             var div = document.createElement("div");
             div.innerHTML = atr[0];
-            div.style.top = ""+atr[1]+"px";
-            div.style.left = ""+(atr[2]) +"px";
+            div.style.top = ele.style.top;
+            div.style.left = ele.style.left;
             div.style.color = '#00FFFF';
             div.style.position = 'absolute';
             parent.appendChild(ele);

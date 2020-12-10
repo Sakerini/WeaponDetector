@@ -61,7 +61,6 @@ def detect(img0):
             for *xyxy, conf, cls in reversed(det):
                 if conf > 0.5:
                     label = '%s %.2f' % (names[int(cls)], conf)
-                    c1, c2 = (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3]))
-                    result.append([label, (c1, c2)])
+                    result.append([label, int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])])
 
     return result
